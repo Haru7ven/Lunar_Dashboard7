@@ -1,0 +1,345 @@
+🌕 SOL - CLPS: Autonomous Lunar Solar & Direct-To-Earth Comms Planner
+
+An autonomous lunar environmental analysis and mission-planning platform designed to support NASA's CLPS and Artemis missions at the lunar South Pole.
+
+---
+
+1. About the Project
+
+SOL Planner is a scientific and technological project developed by three Mozambican medical students from the Faculty of Medicine, Eduardo Mondlane University (UEM), Mozambique:
+
+- Abudala Sualé
+- Dionísio Pelembe
+- Suneila dos Anjos
+
+Although our academic background is in Medicine, we share an interest in science, technology, space exploration, and interdisciplinary innovation. We developed SOL Planner to explore how scientific data, computational methods, and programming can contribute to solving real challenges in space exploration.
+
+The project was conceived to address one of the major challenges of lunar exploration: ensuring reliable solar energy availability and continuous communication between lunar spacecraft and Earth.
+
+SOL Planner combines high-resolution lunar topographic data, astronomical calculations, terrain-obstruction analysis, and independent orbital validation to help identify suitable locations and operational time windows for future lunar missions.
+
+Our goal is to transform complex astronomical and geographical information into practical tools that can support safer, more autonomous, and more sustainable lunar exploration.
+
+2. The Problem We Aim to Solve
+
+The lunar South Pole is one of the most challenging environments for robotic and human exploration.
+
+Due to the Moon's orbital geometry and the extremely low solar elevation angles in polar regions, sunlight can remain close to the horizon. Consequently, relatively small geographical features, such as crater rims, mountains, and elevated terrain, can create extensive shadows.
+
+These conditions introduce two major operational challenges:
+
+A. Solar Energy Availability
+
+Lunar rovers, landers, and scientific instruments may depend on solar energy to recharge batteries and maintain their operations.
+
+Extended periods without direct sunlight can compromise energy availability and limit mission activities.
+
+B. Direct-to-Earth Communication
+
+Communication between lunar spacecraft and Earth can be interrupted when surrounding terrain blocks the direct line of sight.
+
+Even when a spacecraft has an operational communication system, geographical obstructions can prevent direct communication with Earth.
+
+For NASA's Commercial Lunar Payload Services (CLPS) missions and future Artemis activities, understanding these environmental conditions is essential.
+
+SOL Planner was developed to help answer two fundamental questions:
+
+1. When will a specific lunar location receive direct sunlight?
+2. When will that location have an unobstructed direct line of sight to Earth?
+
+3. What We Developed
+
+We developed SOL Planner, an interactive and modular web-based platform that analyzes lunar environmental conditions using scientific datasets and astronomical models.
+
+The platform integrates four main capabilities:
+
+- High-resolution lunar terrain analysis.
+- Solar illumination prediction.
+- Direct-to-Earth visibility assessment.
+- Astronomical calculations and scientific validation.
+
+It allows users to select candidate lunar locations, analyze their environmental characteristics, and compare their suitability for different mission objectives.
+
+4. How the Project Was Built
+
+The development process involved integrating publicly available NASA datasets with computational algorithms and astronomical calculations.
+
+4.1. Lunar Terrain Data Acquisition
+
+We used elevation data from the Lunar Orbiter Laser Altimeter (LOLA), an instrument aboard NASA's Lunar Reconnaissance Orbiter (LRO).
+
+The project uses the polar Digital Elevation Model (DEM):
+
+- Dataset: "ldem_875s_20m"
+- Source: NASA PDS Geosciences Node.
+- Spatial resolution: approximately 20 meters per pixel.
+
+This dataset provides information about the lunar surface elevation and allows the platform to identify geographical obstacles around selected locations.
+
+4.2. Terrain Obstruction Analysis
+
+We implemented a ray-marching algorithm to analyze the visibility of the Sun and Earth relative to the surrounding lunar terrain.
+
+The algorithm evaluates the terrain along the direction of the astronomical target and determines whether geographical features obstruct the line of sight.
+
+Our implementation supports terrain analysis over distances of up to 70 km and incorporates corrections for the Moon's spherical curvature.
+
+This is particularly important in polar regions, where small differences in elevation can significantly influence illumination and visibility.
+
+4.3. Astronomical Calculations
+
+To calculate the apparent positions of the Sun and Earth, we integrated NASA NAIF SPICE kernels.
+
+The main resources include:
+
+- "de440s.bsp"
+- "moon_pa_de440"
+- "pck00011.tpc"
+- "naif0012.tls"
+
+These resources provide planetary ephemerides, lunar orientation information, reference frames, and time conversion data.
+
+They allow SOL Planner to calculate astronomical positions for selected locations and observation times.
+
+4.4. Interactive Web Dashboard
+
+We developed an interactive web dashboard to present the results in a practical and accessible format.
+
+The dashboard allows users to:
+
+- Select different lunar locations.
+- Compare environmental conditions.
+- Analyze solar illumination periods.
+- Evaluate direct Earth visibility.
+- Identify terrain obstructions.
+- Examine the suitability of locations for different mission objectives.
+
+The purpose of this interface is to make complex scientific calculations easier to interpret and use during mission-planning activities.
+
+5. When and How SOL Planner Is Used
+
+SOL Planner is designed primarily for the mission-planning phase, before landing and during the scheduling of lunar surface operations.
+
+It can also support the evaluation of operational conditions during a mission, provided that updated astronomical and terrain information is available.
+
+The intended workflow is:
+
+1. The user selects a candidate lunar location.
+2. The system retrieves the corresponding lunar terrain information.
+3. Astronomical calculations determine the apparent positions of the Sun and Earth.
+4. The ray-marching algorithm evaluates whether the surrounding terrain blocks their visibility.
+5. The platform calculates illumination and direct visibility conditions over the selected observation period.
+6. The dashboard presents the results to support operational decisions.
+
+The system is intended for mission planners, researchers, engineers, and scientific teams working with lunar exploration and surface operations.
+
+It is a decision-support prototype, not an operational NASA flight-control system.
+
+6. Case Study: Connecting Ridge vs. Shackleton Crater
+
+To demonstrate the platform's capabilities, we selected two locations near the lunar South Pole with significantly different environmental characteristics.
+
+Site A — Connecting Ridge
+
+Coordinates: -89.45°, 222.70°.
+
+According to our 30-day simulation:
+
+- Solar illumination: 100%.
+- Direct Earth visibility: 43.2%.
+
+This location represents a potentially favorable environment for solar-powered infrastructure and energy generation.
+
+Its simulated illumination characteristics make it an interesting candidate for further investigation as an operational energy-support location.
+
+Site B — Shackleton Crater
+
+Coordinates: -89.90°, 129.20°.
+
+According to our simulation:
+
+- Solar illumination: 0%.
+- Terrain obstruction: up to 45° in elevation.
+
+This location represents a permanently shadowed region (PSR).
+
+Such regions are scientifically important because they may preserve water ice and other volatile materials.
+
+The location could therefore be relevant to future robotic exploration and lunar resource investigations.
+
+The comparison demonstrates how different lunar environments may serve complementary purposes: one potentially suitable for solar energy infrastructure and another valuable for scientific exploration.
+
+7. NASA Data Sources and Scientific Resources
+
+Our project relies on publicly available scientific resources from NASA and its associated planetary science infrastructure.
+
+Resource| Application
+LRO LOLA DEM| Lunar surface elevation and terrain analysis
+NASA PDS Geosciences Node| Access to lunar elevation datasets
+NASA NAIF SPICE| Astronomical calculations and reference frames
+DE440| Planetary and lunar ephemerides
+NASA JPL Horizons| Independent astronomical validation
+
+These resources provide the scientific foundation for the project's calculations and simulations.
+
+8. Scientific Validation
+
+Scientific reliability is an important aspect of SOL Planner.
+
+To evaluate the accuracy of our astronomical calculations, we developed an automated validation script:
+
+"validate_jpl.py"
+
+The script connects to the official NASA JPL Horizons API and compares our calculated astronomical positions against independent JPL reference data.
+
+Our reported validation results demonstrated maximum discrepancies of:
+
+- Less than 0.005° in azimuth.
+- Less than 0.0004° in elevation.
+
+These results indicate strong numerical agreement between our calculated positions and the reference values obtained from JPL Horizons.
+
+This validation focuses on astronomical position calculations. It should not be interpreted as a complete validation of every terrain-obstruction or communication simulation.
+
+9. Technologies and Scientific Methods
+
+The project brings together several scientific and computational components:
+
+Scientific data:
+
+- NASA LRO LOLA elevation datasets.
+- NASA PDS Geosciences Node.
+- NASA NAIF SPICE kernels.
+- NASA JPL Horizons API.
+
+Computational methods:
+
+- Digital Elevation Model processing.
+- Ray-marching terrain analysis.
+- Spherical lunar curvature correction.
+- Astronomical ephemeris calculations.
+- Solar illumination analysis.
+- Line-of-sight visibility assessment.
+- Automated numerical validation.
+
+User interface:
+
+- Interactive web dashboard.
+- Comparative lunar site analysis.
+- Visualization of illumination and Earth visibility results.
+
+10. Limitations and Challenges
+
+During the development of SOL Planner, we identified several technical limitations that influence the accuracy and scope of the simulations.
+
+10.1. DEM Spatial Resolution
+
+The LOLA dataset used in the project has an approximate spatial resolution of 20 meters per pixel.
+
+Although useful for regional terrain analysis, this resolution may not represent every small geographical feature.
+
+Consequently, some narrow obstacles, local slopes, and small-scale terrain variations may not be captured.
+
+10.2. Maximum Analysis Distance
+
+Our current ray-marching implementation analyzes terrain over distances of up to 70 km.
+
+Geographical obstacles beyond this range are not necessarily represented in the current visibility assessment.
+
+10.3. Dependence on Data Quality
+
+The quality of the results depends on the availability, coverage, resolution, and accuracy of the underlying lunar elevation data.
+
+Errors or missing information in the DEM may affect terrain-obstruction calculations.
+
+10.4. Communication System Limitations
+
+Geometrical visibility between a lunar location and Earth does not automatically guarantee successful radio communication.
+
+Actual communication also depends on antenna orientation, spacecraft hardware, transmission power, receiver sensitivity, link budget, and other operational conditions.
+
+The current project focuses on geometric direct visibility rather than complete radio-frequency link-budget simulation.
+
+10.5. Simulation Period
+
+The presented comparison uses a simulated observation window of 30 days.
+
+Results obtained for this period should not automatically be interpreted as permanent environmental characteristics or as predictions for every future mission date.
+
+10.6. Validation Scope
+
+The JPL Horizons validation evaluates astronomical position calculations.
+
+Further testing with additional lunar locations, longer observation periods, independent terrain datasets, and operational communication parameters would strengthen the overall validation of the platform.
+
+11. Benefits and Expected Impact
+
+SOL Planner aims to contribute to lunar mission planning through several practical benefits.
+
+Improved Mission Safety
+
+By identifying periods of darkness and potential communication interruptions, the platform can help mission planners anticipate environmental risks.
+
+Better Energy Planning
+
+The identification of locations with favorable solar illumination can support the selection of sites for solar-powered infrastructure.
+
+More Reliable Communication Planning
+
+Predicting direct Earth visibility windows can help mission operators plan communication schedules and identify potential terrain-related interruptions.
+
+Improved Landing Site Assessment
+
+Comparing lunar topography, solar illumination, and Earth visibility can support more informed site-selection decisions.
+
+Support for Scientific Exploration
+
+Identifying permanently shadowed regions can help guide scientific investigations into locations that may contain water ice and other valuable resources.
+
+Interdisciplinary Innovation
+
+The project demonstrates how students from different academic backgrounds can apply computational science, mathematical reasoning, and publicly available space-agency data to address complex scientific challenges.
+
+12. Our Vision
+
+Our long-term vision is to develop SOL Planner into a more comprehensive lunar environmental analysis and mission-support platform.
+
+Future improvements could include:
+
+- Higher-resolution lunar terrain datasets.
+- Expanded geographical coverage.
+- Longer simulation periods.
+- More detailed rover and lander energy models.
+- Radio-frequency communication link-budget analysis.
+- Integration of additional lunar environmental datasets.
+- Improved visualization and mission-planning capabilities.
+
+Ultimately, we aim to contribute to the development of tools that make lunar exploration safer, more efficient, and more sustainable.
+
+13. The Team Behind SOL Planner
+
+SOL Planner was developed collaboratively by three Mozambican students:
+
+Abudala Sualé, Dionísio Pelembe, and Suneila dos Anjos.
+
+We are students at the Faculty of Medicine, Eduardo Mondlane University (UEM), in Mozambique.
+
+Our participation in this scientific and technological project reflects our belief that innovation is not limited to a single academic discipline.
+
+Although our academic training is in Medicine, we recognize the importance of interdisciplinary collaboration in addressing complex global and scientific challenges.
+
+Through SOL Planner, we sought to combine curiosity, scientific research, computational thinking, and publicly available NASA resources to contribute to the future of lunar exploration.
+
+We believe that meaningful innovation begins with the willingness to learn, collaborate, and apply knowledge beyond traditional academic boundaries.
+
+---
+
+14. Final Statement
+
+SOL Planner transforms lunar terrain and astronomical data into actionable environmental intelligence.
+
+By combining NASA's LOLA topographic data, NAIF SPICE ephemerides, advanced terrain-obstruction algorithms, and JPL Horizons validation, we developed a platform designed to help identify where solar energy is available, when Earth is directly visible, and how lunar terrain influences mission operations.
+
+Our ambition is to support better-informed decisions for future CLPS and Artemis missions while demonstrating the contribution that interdisciplinary student innovation from Mozambique can make to global scientific challenges.
+
+Developed in Mozambique. Inspired by science. Designed for the future of lunar exploration. 🌍🌕
