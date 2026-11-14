@@ -1,137 +1,37 @@
-<div class="dashboard">
+<div class="dashboard-shell">
+  <div id="cors-alert">
+    <strong>Aviso CORS (Acesso Local):</strong> Se os gráficos não carregarem ao abrir diretamente com duplo clique (ficheiro local <code>file:///</code>), execute no terminal dentro da pasta do projeto:
+    <br><code>python -m http.server 8000</code> e aceda a <code>http://localhost:8000</code>.
+  </div>
 
-  <!-- HEADER -->
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-symbol">◉</span>
-      <div>
-        <h1>LUNAR<span>OPS</span></h1>
-        <p>MISSION PLANNING INTERFACE</p>
-      </div>
+  <header>
+    <div class="title-group">
+      <h1>SOL <span>CLPS</span> Lunar Mission Planner</h1>
+      <div class="subtitle">Iluminação Solar Contínua &amp; Visibilidade Direta com a Terra (DTE) | NASA Space Apps 2026</div>
     </div>
 
-    <div class="mission-status">
-      <span class="status-dot"></span>
-      SYSTEM ONLINE
-      <span class="divider">|</span>
-      LUNAR SOUTH POLE
+    <div class="selector-container">
+      <label for="site-select">Local de Aterragem:</label>
+      <select id="site-select" #siteSelect (change)="onSiteChange($event)">
+        <option value="/data/data_A.json">Site A (Polo Sul - Connecting Ridge)</option>
+        <option value="/data/data_B.json">Site B (Cratera Shackleton)</option>
+      </select>
     </div>
   </header>
 
-  <!-- PAGE INTRODUCTION -->
-  <section class="page-heading">
-    <div>
-      <p class="eyebrow">MISSION ANALYSIS / 001</p>
-      <h2>Landing Site Intelligence</h2>
-      <p class="subtitle">
-        Explore illumination conditions and Earth communication opportunities.
-      </p>
-    </div>
+  <div id="info-bar">A carregar dados do local...</div>
 
-    <div class="date-display">
-      <span>MISSION DATE</span>
-      <strong>2026 — DEMO</strong>
-    </div>
-  </section>
+  <div class="kpi-grid" id="kpi-container"></div>
 
-  <!-- MAIN DASHBOARD -->
-  <main class="dashboard-grid">
-
-    <!-- LEFT PANEL -->
-    <section class="panel site-panel">
-      <p class="panel-label">01 / SITE CONFIGURATION</p>
-      <h3>Landing Site</h3>
-
-      <label for="site">SELECT LOCATION</label>
-      <select id="site">
-        <option>Demo Site Alpha</option>
-        <option>Demo Site Beta</option>
-        <option>Demo Site Gamma</option>
-      </select>
-
-      <div class="coordinates">
-        <div>
-          <span>LATITUDE</span>
-          <strong>--°</strong>
-        </div>
-        <div>
-          <span>LONGITUDE</span>
-          <strong>--°</strong>
-        </div>
-      </div>
-
-      <div class="panel-divider"></div>
-
-      <p class="panel-label">MISSION PARAMETERS</p>
-      <label for="duration">MISSION DURATION</label>
-      <select id="duration">
-        <option>7 days</option>
-        <option>14 days</option>
-        <option>30 days</option>
-      </select>
-
-      <p class="demo-note">DEMO DATA — NOT SCIENTIFICALLY VALIDATED</p>
-    </section>
-
-    <!-- CENTRAL VISUALIZATION -->
-    <section class="panel terrain-panel">
-      <div class="panel-heading">
-        <div>
-          <p class="panel-label">02 / TERRAIN VISUALIZATION</p>
-          <h3>Lunar South Pole</h3>
-        </div>
-        <span class="live-tag">3D VIEW / PLACEHOLDER</span>
-      </div>
-
-       <app-moon-viewer></app-moon-viewer>
-
-      <div class="terrain-footer">
-        <span>TOPOGRAPHY: PENDING</span>
-        <span>ILLUMINATION: PENDING</span>
-      </div>
-    </section>
-
-    <!-- RIGHT PANEL -->
-    <section class="panel conditions-panel">
-      <p class="panel-label">03 / ENVIRONMENTAL CONDITIONS</p>
-      <h3>Site Conditions</h3>
-
-      <div class="metric">
-        <span>Solar illumination</span>
-        <strong>-- %</strong>
-        <small>Awaiting calculation</small>
-      </div>
-
-      <div class="metric">
-        <span>Earth visibility</span>
-        <strong>--</strong>
-        <small>Awaiting calculation</small>
-      </div>
-
-      <div class="metric">
-        <span>Communication window</span>
-        <strong>--</strong>
-        <small>Awaiting calculation</small>
-      </div>
-    </section>
-
-    <!-- BOTTOM PANEL -->
-<section class="panel timeline-panel">
-  <p class="panel-label">04 / MISSION TIMELINE</p>
-  <h3>Illumination & Communication Windows</h3>
-
-  <div class="timeline-placeholder">
-    <span>TIME</span>
-    <p>Scientific timeline visualization will appear here.</p>
+  <div class="charts-grid">
+    <div class="plot-box" id="plot-map"></div>
+    <div class="plot-box" id="plot-sky"></div>
+    <div class="plot-box" id="plot-sun"></div>
+    <div class="plot-box" id="plot-ear"></div>
+    <div class="plot-box full-width" id="plot-vis"></div>
   </div>
-</section>
 
-</main>
   <footer>
-  <span>LUNAROPS / MISSION INTELLIGENCE</span>
-  <span>PROTOTYPE BUILD 001</span>
-</footer>
-
+    SOL - CLPS Lunar Planner &bull; Topografia LRO/LOLA DEM 20m &bull; Efemérides JPL SPICE DE440 &bull; NASA Space Apps Challenge
+  </footer>
 </div>
-
-<router-outlet />
