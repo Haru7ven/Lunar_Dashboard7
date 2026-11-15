@@ -203,7 +203,7 @@ The grid is the 7584 x 7584 DEM taken at every 16th pixel (320 m spacing, no ave
 - The terrain grid is the largest part of each file and is identical for sites in the same DEM; it can be split into one shared file.
 - Do not copy the raw DEM or kernels into the frontend. Reference the sources in sections 2 and 3.
 
-## 12. Authorship, AI assistance and provenance
+## 12. Authorship and AI assistance
 
 Author of the pipeline and datasets: Abudala Sualé, Dionisio Pelembe and Suneila Dos Anjos. The code, the standalone page and this document were developed with substantial assistance from AI tools: Claude (Anthropic) and Anti-Gravity to revise all of the code baselines and make specific corrections to debug.
 ## 13. Credits and licences
