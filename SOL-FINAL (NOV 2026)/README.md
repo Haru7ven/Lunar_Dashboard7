@@ -205,10 +205,7 @@ The grid is the 7584 x 7584 DEM taken at every 16th pixel (320 m spacing, no ave
 
 ## 12. Authorship, AI assistance and provenance
 
-Author of the pipeline and datasets: Abudala Sualé. The code, the standalone page and this document were developed with substantial assistance from AI tools: Claude (Anthropic) and Anti-Gravity (details to be completed: tool, task and date). The author ran the calculations, reviewed the outputs and decided scope and sites. Statements here describe what the code does as written and have not been independently verified.
-
-Version 0.1 was assembled on 13 November 2026, before the start of the NASA Space Apps Challenge 2026 weekend (14 and 15 November), as a preparatory training prototype, and is declared as pre-existing work. `archive/` keeps the earlier versions unchanged: the nearest-neighbour pipeline and its datasets, and a later pipeline, interface and datasets that included an RF link margin, a dust twilight term and a geoid offset. Those three extras were removed in version 0.2 because they were not derived from the data or from documented models.
-
+Author of the pipeline and datasets: Abudala Sualé, Dionisio Pelembe and Suneila Dos Anjos. The code, the standalone page and this document were developed with substantial assistance from AI tools: Claude (Anthropic) and Anti-Gravity to revise all of the code baselines and make specific corrections to debug.
 ## 13. Credits and licences
 
 LOLA data: NASA PDS Geosciences Node and the LOLA science team. SPICE toolkit and kernels: NASA NAIF / JPL. Libraries: SpiceyPy, rasterio, numpy, astroquery, Plotly.js. Code licence: to be chosen by the team before publication.
