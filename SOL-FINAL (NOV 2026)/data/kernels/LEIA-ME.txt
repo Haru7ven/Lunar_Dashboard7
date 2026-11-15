@@ -1,0 +1,1 @@
+Preenchida pelo setup.ps1. Nao fazer commit.

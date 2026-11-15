@@ -1,0 +1,250 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\WINDOWS\system32> Get-Content "C:\Users\lenovo\Downloads\ODECartFiles.txt" | Select-Object -First 20
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/BROWSE/lola_gdr/ldem_875s_20m.html
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/BROWSE/lola_gdr/ldem_875s_20m_600dpi.jpg
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/BROWSE/lola_gdr/ldem_875s_20m_600dpi.lbl
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_875s_20m.img
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_875s_20m.lbl
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/ldem_875s_20m.xml
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/jp2/ldem_875s_20m.jp2
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/jp2/ldem_875s_20m_aux.xml
+https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/jp2/ldem_875s_20m_jp2.lbl
+PS C:\WINDOWS\system32> $ProgressPreference = 'SilentlyContinue'
+>> New-Item -ItemType Directory -Force -Path "C:\Users\lenovo\sol-clps-planner\data\raw" | Out-Null
+>> Set-Location "C:\Users\lenovo\sol-clps-planner\data\raw"
+>> Get-Content "C:\Users\lenovo\Downloads\ODECartFiles.txt" | Where-Object { $_ -match '^https?://' } | ForEach-Object {>>     $nome = [System.IO.Path]::GetFileName(([uri]$_).AbsolutePath)
+>>     Write-Host "A descarregar $nome"
+>>     Invoke-WebRequest -Uri $_ -OutFile $nome
+>> }
+>> Get-ChildItem | Select-Object Name, @{n='MB';e={[math]::Round($_.Length/1MB,1)}}
+A descarregar ldem_875s_20m.html
+A descarregar ldem_875s_20m_600dpi.jpg
+A descarregar ldem_875s_20m_600dpi.lbl
+A descarregar ldem_875s_20m.img
+A descarregar ldem_875s_20m.lbl
+A descarregar ldem_875s_20m.xml
+A descarregar ldem_875s_20m.jp2
+A descarregar ldem_875s_20m_aux.xml
+A descarregar ldem_875s_20m_jp2.lbl
+
+Name                        MB
+----                        --
+ldem_875s_20m.html           0
+ldem_875s_20m.img        109.7
+ldem_875s_20m.jp2         20.5
+ldem_875s_20m.lbl            0
+ldem_875s_20m.xml            0
+ldem_875s_20m_600dpi.jpg   2.9
+ldem_875s_20m_600dpi.lbl     0
+ldem_875s_20m_aux.xml        0
+ldem_875s_20m_jp2.lbl        0
+
+
+PS C:\Users\lenovo\sol-clps-planner\data\raw> pip install spiceypy rasterio numpy astroquery
+Requirement already satisfied: spiceypy in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (8.3.0)
+Requirement already satisfied: rasterio in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (1.5.2)
+Requirement already satisfied: numpy in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (2.4.4)
+Collecting astroquery
+  Downloading astroquery-0.4.11-py3-none-any.whl.metadata (6.5 kB)
+Requirement already satisfied: affine in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from rasterio) (3.0.1)
+Requirement already satisfied: attrs in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from rasterio) (26.1.0)
+Requirement already satisfied: certifi in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from rasterio) (2026.6.17)
+Requirement already satisfied: click!=8.2.*,>=4.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from rasterio) (8.5.0)
+Requirement already satisfied: pyparsing>=3.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from rasterio) (3.3.2)
+Collecting astropy>=5.0 (from astroquery)
+  Downloading astropy-8.0.2-cp311-abi3-win_amd64.whl.metadata (11 kB)
+Requirement already satisfied: requests>=2.19 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from astroquery) (2.34.2)
+Requirement already satisfied: beautifulsoup4>=4.8 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from astroquery) (4.15.0)
+Collecting html5lib>=0.999 (from astroquery)
+  Downloading html5lib-1.1-py2.py3-none-any.whl.metadata (16 kB)
+Requirement already satisfied: keyring>=15.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from astroquery) (25.7.0)
+Collecting pyvo>=1.5 (from astroquery)
+  Downloading pyvo-1.10.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting astropy-iers-data>=0.2026.9.28.0.59.37 (from astropy>=5.0->astroquery)
+  Downloading astropy_iers_data-0.2026.11.9.0.35.9-py3-none-any.whl.metadata (3.2 kB)
+Requirement already satisfied: packaging>=25.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from astropy>=5.0->astroquery) (26.2)
+Collecting pyerfa>=2.0.1.3 (from astropy>=5.0->astroquery)
+  Downloading pyerfa-2.0.1.5-cp39-abi3-win_amd64.whl.metadata (5.9 kB)
+Requirement already satisfied: PyYAML>=6.0.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from astropy>=5.0->astroquery) (6.0.3)
+Requirement already satisfied: soupsieve>=1.6.1 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from beautifulsoup4>=4.8->astroquery) (2.8.4)
+Requirement already satisfied: typing-extensions>=4.0.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from beautifulsoup4>=4.8->astroquery) (4.16.0)
+Requirement already satisfied: six>=1.9 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from html5lib>=0.999->astroquery) (1.17.0)
+Collecting webencodings (from html5lib>=0.999->astroquery)
+  Downloading webencodings-0.6.1-py3-none-any.whl.metadata (3.4 kB)
+Requirement already satisfied: pywin32-ctypes>=0.2.0 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from keyring>=15.0->astroquery) (0.2.3)
+Requirement already satisfied: jaraco.classes in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from keyring>=15.0->astroquery) (3.4.0)
+Requirement already satisfied: jaraco.functools in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from keyring>=15.0->astroquery) (4.6.0)
+Requirement already satisfied: jaraco.context in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from keyring>=15.0->astroquery) (6.1.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from requests>=2.19->astroquery) (3.4.9)
+Requirement already satisfied: idna<4,>=2.5 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from requests>=2.19->astroquery) (3.18)
+Requirement already satisfied: urllib3<3,>=1.26 in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from requests>=2.19->astroquery) (2.7.0)
+Requirement already satisfied: more-itertools in C:\Users\lenovo\AppData\Local\Programs\Python\Python313\Lib\site-packages (from jaraco.classes->keyring>=15.0->astroquery) (11.2.1)
+Downloading astroquery-0.4.11-py3-none-any.whl (11.1 MB)
+   ---------------------------------------- 11.1/11.1 MB 359.6 kB/s  0:00:31
+Downloading astropy-8.0.2-cp311-abi3-win_amd64.whl (6.5 MB)
+   ---------------------------------------- 6.5/6.5 MB 447.4 kB/s  0:00:14
+Downloading astropy_iers_data-0.2026.11.9.0.35.9-py3-none-any.whl (2.0 MB)
+   ---------------------------------------- 2.0/2.0 MB 447.5 kB/s  0:00:04
+Downloading html5lib-1.1-py2.py3-none-any.whl (112 kB)
+Downloading pyerfa-2.0.1.5-cp39-abi3-win_amd64.whl (349 kB)
+Downloading pyvo-1.10.0-py3-none-any.whl (1.2 MB)
+   ---------------------------------------- 1.2/1.2 MB 678.6 kB/s  0:00:02
+Downloading webencodings-0.6.1-py3-none-any.whl (8.7 kB)
+Installing collected packages: webencodings, pyerfa, astropy-iers-data, html5lib, astropy, pyvo, astroquery
+Successfully installed astropy-8.0.2 astropy-iers-data-0.2026.11.9.0.35.9 astroquery-0.4.11 html5lib-1.1 pyerfa-2.0.1.5 pyvo-1.10.0 webencodings-0.6.1
+PS C:\Users\lenovo\sol-clps-planner\data\raw> $ProgressPreference = 'SilentlyContinue'
+>> $base = "C:\Users\lenovo\sol-clps-planner"
+>> New-Item -ItemType Directory -Force "$base\data\raw","$base\data\kernels" | Out-Null
+>>
+>> # A) DEM LOLA (os 17 ficheiros da tua lista, 276 MB)
+>> Set-Location "$base\data\raw"
+>> Get-Content "C:\Users\lenovo\Downloads\ODECartFiles.txt" | Where-Object { $_ -match '^https?://' } | ForEach-Object {
+>>     $nome = [System.IO.Path]::GetFileName(([uri]$_).AbsolutePath)
+>>     Write-Host "DEM: $nome"
+>>     Invoke-WebRequest -Uri $_ -OutFile $nome
+>> }
+>>
+>> # B) Os 5 kernels SPICE
+>> $k = [ordered]@{
+>>  "naif0012.tls"                 = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls"
+>>  "de440s.bsp"                   = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440s.bsp"
+>>  "pck00011.tpc"                 = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00011.tpc"
+>>  "moon_pa_de440_200625.bpc"     = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de440_200625.bpc"
+>>  "moon_de440_250416.tf"         = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_de440_250416.tf"
+>> }
+>> foreach ($n in $k.Keys) {
+>>     Write-Host "Kernel: $n"
+>>     Invoke-WebRequest -Uri $k[$n] -OutFile "$base\data\kernels\$n"
+>> }
+>>
+>> # C) Verificação
+>> Get-ChildItem "$base\data\raw","$base\data\kernels" | Select-Object Directory, Name, @{n='MB';e={[math]::Round($_.Length/1MB,2)}}
+DEM: ldem_875s_20m.html
+DEM: ldem_875s_20m_600dpi.jpg
+DEM: ldem_875s_20m_600dpi.lbl
+DEM: ldem_875s_20m.img
+DEM: ldem_875s_20m.lbl
+DEM: ldem_875s_20m.xml
+DEM: ldem_875s_20m.jp2
+DEM: ldem_875s_20m_aux.xml
+DEM: ldem_875s_20m_jp2.lbl
+Kernel: naif0012.tls
+Kernel: de440s.bsp
+Kernel: pck00011.tpc
+Kernel: moon_pa_de440_200625.bpc
+Kernel: moon_de440_250416.tf
+
+Directory                                     Name                         MB
+---------                                     ----                         --
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m.html            0
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m.img        109.71
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m.jp2         20.47
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m.lbl             0
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m.xml          0.01
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m_600dpi.jpg    2.9
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m_600dpi.lbl      0
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m_aux.xml         0
+C:\Users\lenovo\sol-clps-planner\data\raw     ldem_875s_20m_jp2.lbl      0.01
+C:\Users\lenovo\sol-clps-planner\data\kernels de440s.bsp                31.21
+C:\Users\lenovo\sol-clps-planner\data\kernels moon_de440_250416.tf       0.02
+C:\Users\lenovo\sol-clps-planner\data\kernels moon_pa_de440_200625.bpc  12.27
+C:\Users\lenovo\sol-clps-planner\data\kernels naif0012.tls               0.01
+C:\Users\lenovo\sol-clps-planner\data\kernels pck00011.tpc               0.13
+
+
+PS C:\Users\lenovo\sol-clps-planner\data\raw> $ProgressPreference = 'SilentlyContinue'
+>> $base = "C:\Users\lenovo\sol-clps-planner"
+>> New-Item -ItemType Directory -Force "$base\data\raw","$base\data\kernels" | Out-Null
+>>
+>> # A) DEM LOLA (os 17 ficheiros da tua lista, 276 MB)
+>> Set-Location "$base\data\raw"
+>> Get-Content "C:\Users\lenovo\Downloads\ODECartFiles.txt" | Where-Object { $_ -match '^https?://' } | ForEach-Object {
+>>     $nome = [System.IO.Path]::GetFileName(([uri]$_).AbsolutePath)
+>>     Write-Host "DEM: $nome"
+>>     Invoke-WebRequest -Uri $_ -OutFile $nome
+>> }
+>>
+>> # B) Os 5 kernels SPICE
+>> $k = [ordered]@{
+>>  "naif0012.tls"                 = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls"
+>>  "de440s.bsp"                   = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440s.bsp"
+>>  "pck00011.tpc"                 = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00011.tpc"
+>>  "moon_pa_de440_200625.bpc"     = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de440_200625.bpc"
+>>  "moon_de440_250416.tf"         = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/fk/satellites/moon_de440_250416.tf"
+>> }
+>> foreach ($n in $k.Keys) {
+>>     Write-Host "Kernel: $n"
+>>     Invoke-WebRequest -Uri $k[$n] -OutFile "$base\data\kernels\$n"
+>> }
+>>
+>> # C) Verificação
+>> Get-ChildItem "$base\data\raw","$base\data\kernels" | Select-Object Directory, Name, @{n='MB';e={[math]::Round($_.Length/1MB,2)}}THHYTJK@UG^C
+PS C:\Users\lenovo\sol-clps-planner\data\raw> Get-ChildItem "C:\Users\lenovo\sol-clps-planner\data\raw" | Sort-Object Length -Descending | Select-Object Name, @{n='MB';e={[math]::Round($_.Length/1MB,1)}}
+>> python -c "import spiceypy, rasterio, numpy; print('BIBLIOTECAS OK')"
+
+BIBLIOTECAS OK
+Name                        MB
+----                        --
+ldem_875s_20m.img        109.7
+ldem_875s_20m.jp2         20.5
+ldem_875s_20m_600dpi.jpg   2.9
+ldem_875s_20m.xml            0
+ldem_875s_20m_jp2.lbl        0
+ldem_875s_20m.lbl            0
+ldem_875s_20m_aux.xml        0
+ldem_875s_20m_600dpi.lbl     0
+ldem_875s_20m.html           0
+
+
+PS C:\Users\lenovo\sol-clps-planner\data\raw> Set-Location "C:\Users\lenovo\sol-clps-planner"
+>> @'
+>> import numpy as np, rasterio, spiceypy as sp
+>> base = r"C:\Users\lenovo\sol-clps-planner\data"
+>>
+>> # 1) DEM
+>> with rasterio.open(base + r"\raw\ldem_875s_20m.lbl") as s:
+>>     print("CRS:", s.crs)
+>>     print("Shape:", s.shape, "Resolucao:", s.res)
+>>     print("Limites:", s.bounds)
+>>     print("Escala/offset:", s.scales, s.offsets, "nodata:", s.nodata)
+>>     r, c = s.index(0, 0)
+>>     print("Valor bruto no polo:", s.read(1, window=((r, r+1), (c, c+1)))[0, 0])
+>>
+>> # 2) Kernels
+>> for k in ["naif0012.tls", "de440s.bsp", "pck00011.tpc",
+>>           "moon_pa_de440_200625.bpc", "moon_de440_250416.tf"]:
+>>     sp.furnsh(base + "\\kernels\\" + k)
+>>
+>> # 3) Az/El do Sol num ponto (lat -89.7, lon 0), raio lunar 1737.4 km
+>> et = sp.utc2et("2026-11-14T12:00:00")
+>> sun = sp.spkpos("SUN", et, "MOON_ME", "LT+S", "MOON")[0]
+>> site = sp.georec(np.radians(0.0), np.radians(-89.7), 0.0, 1737.4, 0.0)
+>> up = site / np.linalg.norm(site)
+>> east = np.cross([0, 0, 1], up); east /= np.linalg.norm(east)
+>> north = np.cross(up, east)
+>> v = sun - site
+>> el = np.degrees(np.arcsin(np.dot(v, up) / np.linalg.norm(v)))
+>> az = np.degrees(np.arctan2(np.dot(v, east), np.dot(v, north))) % 360
+>> print(f"SOL: az={az:.2f}  el={el:.2f}")
+>> '@ | Set-Content teste.py -Encoding UTF8
+>> python teste.py
+CRS: PROJCS["POLAR_STEREOGRAPHIC MOON",GEOGCS["GCS_MOON",DATUM["D_MOON",SPHEROID["MOON",1737400,0]],PRIMEM["Reference_Meridian",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Polar_Stereographic"],PARAMETER["latitude_of_origin",-90],PARAMETER["central_meridian",0],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["unknown",1],AXIS["Easting",NORTH],AXIS["Northing",NORTH]]
+Shape: (7584, 7584) Resolucao: (20.0, 20.0)
+Limites: BoundingBox(left=-75840.0, bottom=-75840.0, right=75840.0, top=75840.0)
+Escala/offset: (0.5,) (1737400.0,) nodata: -32768.0
+Valor bruto no polo: 2577
+SOL: az=120.53  el=1.40
+PS C:\Users\lenovo\sol-clps-planner> cd C:\Users\lenovo\sol-clps-planner
+>> python run.py
+C:\Users\lenovo\AppData\Local\Programs\Python\Python313\python.exe: can't open file 'C:\\Users\\lenovo\\sol-clps-planner\\run.py': [Errno 2] No such file or directory
+PS C:\Users\lenovo\sol-clps-planner> Move-Item "C:\Users\lenovo\Downloads\run.py" "C:\Users\lenovo\sol-clps-planner\run.py" -Force
+>> python run.py
+Local: lat -89.45, lon 222.7, x=-11310 m, y=-12257 m, altitude 1958.0 m
+Horizonte: min -2.85, max 0.16 graus
+{'sun_pct': 100.0, 'earth_pct': 43.19444444444444, 'both_pct': 43.19444444444444, 'max_dark_h': 0.0, 'max_noearth_h': 330.0}
+Gerado: C:\Users\lenovo\sol-clps-planner\web\index.html
+PS C:\Users\lenovo\sol-clps-planner>

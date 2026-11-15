@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOL - CLPS Lunar Planner | NASA Space Apps</title>
+  <!-- Plotly.js CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #111116;
+      --card-bg: #1a1a24;
+      --card-border: #2b2b3a;
+      --accent-gold: #f5b700;
+      --accent-blue: #4da3ff;
+      --accent-green: #2ecc71;
+      --accent-red: #ff5252;
+      --text: #eee;
+      --text-muted: #9aa0a6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px 24px;
+      line-height: 1.5;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-group h1 span {
+      background: var(--accent-gold);
+      color: #111;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .selector-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .selector-container label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select {
+      background: #111;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus {
+      border-color: var(--accent-gold);
+    }
+
+    #cors-alert {
+      display: none;
+      background: rgba(255, 82, 82, 0.15);
+      border: 1px solid var(--accent-red);
+      color: #ff9999;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    #info-bar {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 16px;
+      border-radius: 6px;
+      color: #c5c7d0;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kpi-card .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .kpi-card .val {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .kpi-card.blue .val { color: var(--accent-blue); }
+    .kpi-card.green .val { color: var(--accent-green); }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 960px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+
+    .plot-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 380px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cors-alert">
+    <strong>Aviso CORS (Acesso Local):</strong> Se os gráficos não carregarem ao abrir diretamente com duplo clique (ficheiro local <code>file:///</code>), execute no terminal dentro da pasta <code>web/</code>:
+    <br><code>python -m http.server 8000</code> e aceda a <code>http://localhost:8000</code>. No GitHub Pages funcionará automaticamente!
+  </div>
+
+  <header>
+    <div class="title-group">
+      <h1>SOL <span>CLPS</span> Lunar Mission Planner</h1>
+      <div class="subtitle">Iluminação Solar Contínua & Visibilidade Direta com a Terra (DTE) | NASA Space Apps 2026</div>
+    </div>
+    <div class="selector-container">
+      <label for="site-select">Local de Aterragem:</label>
+      <select id="site-select">
+        <option value="data_A.json">Site A (Polo Sul, 30 dias)</option>
+        <option value="data_B.json">Site B (Polo Sul, 30 dias)</option>
+        <option value="data_A_365d.json">Site A, 365 dias</option>
+        <option value="data_B_365d.json">Site B, 365 dias</option>
+      </select>
+    </div>
+  </header>
+
+  <div id="info-bar">A carregar dados do local...</div>
+
+  <div class="kpi-grid" id="kpi-container">
+    <!-- Renderizado dinamicamente via app.js -->
+  </div>
+
+  <div class="charts-grid">
+    <div class="plot-box" id="plot-map"></div>
+    <div class="plot-box" id="plot-sky"></div>
+    <div class="plot-box" id="plot-sun"></div>
+    <div class="plot-box" id="plot-ear"></div>
+    <div class="plot-box full-width" id="plot-vis"></div>
+  </div>
+
+  <footer>
+    SOL - CLPS Lunar Planner &bull; Topografia LRO/LOLA DEM 20m &bull; Efemérides JPL SPICE DE440 &bull; NASA Space Apps Challenge
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

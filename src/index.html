@@ -1,13 +1,342 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>LunarDashboard</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
-</html>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #050817;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+app-root {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.dashboard {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 28px 4%;
+  position: relative;
+  isolation: isolate;
+  background-image: url('/images/webb-deep-field.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #e8edff;
+  font-family: Arial, sans-serif;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #34443a;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-symbol {
+  font-size: 36px;
+  color: #b7d49a;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 21px;
+  letter-spacing: 3px;
+}
+
+.brand h1 span {
+  color: #b7d49a;
+}
+
+.brand p,
+.eyebrow,
+.panel-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #8fa594;
+}
+
+.brand p {
+  margin: 5px 0 0;
+}
+
+.mission-status {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #b9c8bd;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: #a8d68b;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+
+.divider {
+  margin: 0 12px;
+  color: #53645a;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  padding: 36px 0 28px;
+}
+
+.page-heading h2 {
+  font-size: 30px;
+  margin: 8px 0;
+}
+
+.subtitle {
+  color: #9aaa9e;
+  font-size: 13px;
+}
+
+.date-display {
+  text-align: right;
+  display: grid;
+  gap: 8px;
+}
+
+.date-display span,
+.coordinates span {
+  color: #8fa594;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 2fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.terrain-panel {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.panel h3 {
+  font-size: 17px;
+  margin: 10px 0 20px;
+}
+
+.panel-label {
+  margin: 0;
+}
+
+.site-panel label {
+  display: block;
+  font-size: 10px;
+  color: #9aaa9e;
+  margin: 20px 0 8px;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  background: #101713;
+  color: #e8eee8;
+  border: 1px solid #46594a;
+  border-radius: 4px;
+}
+
+.coordinates {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.coordinates div {
+  display: grid;
+  gap: 8px;
+}
+
+.panel-divider {
+  border-top: 1px solid #35463a;
+  margin: 25px 0;
+}
+
+.demo-note {
+  font-size: 9px;
+  line-height: 1.6;
+  color: #d5b77b;
+  margin-top: 30px;
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.live-tag {
+  color: #b7d49a;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.terrain-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-size: 9px;
+  color: #82988a;
+}
+
+.timeline-panel {
+  grid-column: 1 / -1;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #34443a;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #82988a;
+}
+
+.sol-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: rgba(17, 17, 22, 0.85);
+  border: 1px solid rgba(117, 138, 155, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #dbe4ee;
+}
+
+.error-text {
+  color: #ff8d8d;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.kpi-card {
+  background: rgba(24, 27, 38, 0.86);
+  border: 1px solid rgba(130, 160, 180, 0.46);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+}
+
+.kpi-card .label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #9aaa9e;
+  text-transform: uppercase;
+}
+
+.kpi-card .val {
+  font-size: 25px;
+  font-weight: 700;
+  color: #b7d49a;
+}
+
+.kpi-card.blue .val {
+  color: #7fb2ff;
+}
+
+.kpi-card.green .val {
+  color: #7fe0a5;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.plot-box {
+  min-height: 260px;
+  border: 1px solid rgba(130, 160, 180, 0.5);
+  border-radius: 10px;
+  background: rgba(12, 14, 20, 0.82);
+  overflow: hidden;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .terrain-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .mission-status {
+    display: none;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
