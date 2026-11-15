@@ -4,12 +4,25 @@ import {
   ElementRef,
   ViewChild,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  Output,
+  EventEmitter
 } from '@angular/core';
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+export interface LunarSiteSelection {
+  latitude: number;
+  longitude: number;
+  uv: { u: number; v: number } | null;
+  surfacePosition: {
+    x: number;
+    y: number;
+    z: number;
+  };
+}
 
 @Component({
   selector: 'app-moon-viewer',
@@ -27,6 +40,106 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
   private renderer!: THREE.WebGLRenderer;
   private controls!: OrbitControls;
   private animationId = 0;
+
+    @Output() siteSelected = new EventEmitter<LunarSiteSelection>();
+
+  private raycaster = new THREE.Raycaster();
+  private pointer = new THREE.Vector2();
+
+  private moonModel!: THREE.Group;
+  private moonCenterLocal = new THREE.Vector3();
+  private moonRadius = 1;
+
+  private siteMarker?: THREE.Mesh;
+  private siteInfo!: HTMLDivElement;
+
+  private pointerStart = new THREE.Vector2();
+
+  private onCanvasPointerDown = (event: PointerEvent): void => {
+    this.pointerStart.set(event.clientX, event.clientY);
+  };
+
+  private onCanvasPointerUp = (event: PointerEvent): void => {
+    const movement = Math.hypot(
+      event.clientX - this.pointerStart.x,
+      event.clientY - this.pointerStart.y
+    );
+
+    // Ignore camera drags. Only process actual clicks.
+    if (movement > 5 || !this.moonModel) return;
+
+    const rect = this.renderer.domElement.getBoundingClientRect();
+
+    this.pointer.x =
+      ((event.clientX - rect.left) / rect.width) * 2 - 1;
+
+    this.pointer.y =
+      -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+
+    const intersections = this.raycaster.intersectObject(
+      this.moonModel,
+      true
+    );
+
+    if (!intersections.length) return;
+
+    const hit = intersections[0];
+
+    const localPosition = this.moonModel.worldToLocal(
+      hit.point.clone()
+    );
+
+    const direction = localPosition
+      .sub(this.moonCenterLocal)
+      .normalize();
+
+    // Initial spherical coordinate conversion.
+    const latitude =
+      THREE.MathUtils.radToDeg(
+        Math.asin(THREE.MathUtils.clamp(direction.y, -1, 1))
+      );
+
+    const longitude =
+      THREE.MathUtils.radToDeg(
+        Math.atan2(direction.z, direction.x)
+      );
+
+    this.placeSiteMarker(hit.point, hit.face?.normal, hit.object);
+
+    const selection: LunarSiteSelection = {
+      latitude,
+      longitude,
+      uv: hit.uv
+        ? { u: hit.uv.x, v: hit.uv.y }
+        : null,
+      surfacePosition: {
+        x: hit.point.x,
+        y: hit.point.y,
+        z: hit.point.z
+      }
+    };
+
+    this.siteInfo.innerHTML = `
+      <div style="color:#8bd5ff;font-size:10px;letter-spacing:2px">
+        SELECTED LUNAR SITE
+      </div>
+      <div style="margin-top:8px;font-size:14px">
+        LAT: ${latitude.toFixed(3)}°
+      </div>
+      <div style="font-size:14px">
+        LON: ${longitude.toFixed(3)}°
+      </div>
+      <div style="margin-top:6px;color:#9ba9bd;font-size:10px">
+        SURFACE INTERSECTION CONFIRMED
+      </div>
+    `;
+
+    console.log('NEW LUNAR SITE:', selection);
+
+    this.siteSelected.emit(selection);
+  };
 
   ngAfterViewInit(): void {
     this.initializeScene();
@@ -65,12 +178,47 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
 
     container.appendChild(this.renderer.domElement);
 
+        container.style.position = 'relative';
+
+    this.siteInfo = document.createElement('div');
+
+    Object.assign(this.siteInfo.style, {
+      position: 'absolute',
+      top: '15px',
+      left: '15px',
+      padding: '12px 16px',
+      background: 'rgba(5, 12, 25, 0.88)',
+      border: '1px solid rgba(100, 180, 255, 0.35)',
+      borderRadius: '6px',
+      color: '#ffffff',
+      fontFamily: 'monospace',
+      zIndex: '10',
+      pointerEvents: 'none',
+      minWidth: '190px',
+      fontSize: '12px'
+    });
+
+    this.siteInfo.textContent = 'SELECT A POINT ON THE MOON';
+
+    container.appendChild(this.siteInfo);
+
     this.controls = new OrbitControls(
       this.camera,
       this.renderer.domElement
     );
 
     this.controls.enableDamping = true;
+        this.renderer.domElement.style.cursor = 'crosshair';
+
+    this.renderer.domElement.addEventListener(
+      'pointerdown',
+      this.onCanvasPointerDown
+    );
+
+    this.renderer.domElement.addEventListener(
+      'pointerup',
+      this.onCanvasPointerUp
+    );
     this.controls.minDistance = 1.5;
     this.controls.maxDistance = 8;
 
@@ -152,10 +300,26 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
         console.log('Original position:', moon.position);
 
         moon.scale.setScalar(1);
-        moon.visible = true;
-        this.inspectModelCoordinates('TOPOGRAPHIC MOON', moon);
-        this.inspectCardinalAxes('TOPOGRAPHIC MOON', moon);
-        this.scene.add(moon);
+moon.visible = true;
+
+this.inspectModelCoordinates('TOPOGRAPHIC MOON', moon);
+this.inspectCardinalAxes('TOPOGRAPHIC MOON', moon);
+
+this.scene.add(moon);
+
+moon.updateMatrixWorld(true);
+
+this.moonModel = moon;
+
+this.moonCenterLocal.copy(
+  moon.worldToLocal(center.clone())
+);
+
+this.moonRadius = sphere.radius;
+
+console.log('CLICKABLE MOON INITIALIZED');
+console.log('Local centre:', this.moonCenterLocal);
+console.log('Reference radius:', this.moonRadius);
 
         // this.loadGeographicGrid(moon);
       },
@@ -384,6 +548,57 @@ private inspectCardinalAxes(
     });
   }
 
+    private placeSiteMarker(
+    point: THREE.Vector3,
+    faceNormal?: THREE.Vector3,
+    hitObject?: THREE.Object3D
+  ): void {
+
+    if (this.siteMarker) {
+      this.scene.remove(this.siteMarker);
+
+      this.siteMarker.geometry.dispose();
+
+      (this.siteMarker.material as THREE.Material).dispose();
+    }
+
+    const markerGeometry = new THREE.SphereGeometry(
+      this.moonRadius * 0.012,
+      20,
+      20
+    );
+
+    const markerMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffa629,
+      depthTest: true,
+      depthWrite: false
+    });
+
+    this.siteMarker = new THREE.Mesh(
+      markerGeometry,
+      markerMaterial
+    );
+
+    const normal = faceNormal && hitObject
+      ? faceNormal.clone().applyMatrix3(
+          new THREE.Matrix3().getNormalMatrix(
+            hitObject.matrixWorld
+          )
+        ).normalize()
+      : point.clone().sub(this.moonCenterLocal).normalize();
+
+    this.siteMarker.position.copy(
+      point.clone().addScaledVector(
+        normal,
+        this.moonRadius * 0.004
+      )
+    );
+
+    this.siteMarker.renderOrder = 10;
+
+    this.scene.add(this.siteMarker);
+  }
+
   private animate = (): void => {
     this.animationId = requestAnimationFrame(this.animate);
 
@@ -393,6 +608,25 @@ private inspectCardinalAxes(
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationId);
+
+        this.renderer?.domElement.removeEventListener(
+      'pointerdown',
+      this.onCanvasPointerDown
+    );
+
+    this.renderer?.domElement.removeEventListener(
+      'pointerup',
+      this.onCanvasPointerUp
+    );
+
+    this.siteMarker?.geometry.dispose();
+
+    if (this.siteMarker) {
+      (this.siteMarker.material as THREE.Material).dispose();
+      this.scene.remove(this.siteMarker);
+    }
+
+    this.siteInfo?.remove();
 
     this.controls?.dispose();
     this.renderer?.dispose();

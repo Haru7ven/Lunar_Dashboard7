@@ -1,7 +1,7 @@
 
 import { Component, signal, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MoonViewer } from './moon-viewer/moon-viewer';
+import { MoonViewer, type LunarSiteSelection } from './moon-viewer/moon-viewer';
 import { SpaceBackground } from './space-background/space-background';
 
 @Component({
@@ -17,6 +17,7 @@ export class App implements OnInit {
   protected dataset = signal<any>(null);
   protected loading = signal(true);
   protected loadError = signal('');
+  protected selectedPoint = signal<LunarSiteSelection | null>(null);
 
   ngOnInit(): void {
     this.loadDataset(this.selectedDataset());
@@ -53,5 +54,10 @@ export class App implements OnInit {
   onSiteChange(event: Event): void {
     const filename = (event.target as HTMLSelectElement).value;
     this.loadDataset(filename);
+  }
+
+  onSiteSelected(selection: LunarSiteSelection): void {
+    this.selectedPoint.set(selection);
+    console.log('DASHBOARD LOCATION UPDATED:', selection);
   }
 }

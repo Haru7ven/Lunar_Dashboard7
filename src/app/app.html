@@ -54,24 +54,38 @@
 
       <div class="panel-divider"></div>
 
-      <p class="panel-label">LANDING SITE COORDINATES</p>
-
       <div class="coordinates">
-        <div>
-          <span>LATITUDE</span>
-          <strong>{{ dataset()?.site?.lat ?? '—' }}°</strong>
-        </div>
+  <div>
+    <span>LATITUDE</span>
+    <strong>{{ selectedPoint()?.latitude ?? dataset()?.site?.lat ?? '—' }}°</strong>
+  </div>
 
-        <div>
-          <span>LONGITUDE</span>
-          <strong>{{ dataset()?.site?.lon ?? '—' }}°</strong>
-        </div>
-      </div>
+  <div>
+    <span>LONGITUDE</span>
+    <strong>{{ selectedPoint()?.longitude ?? dataset()?.site?.lon ?? '—' }}°</strong>
+  </div>
+</div>
+
+@if (selectedPoint()) {
+  <p class="demo-note">
+    CUSTOM LOCATION SELECTED — COORDINATES FROM 3D SURFACE INTERSECTION
+  </p>
+} @else {
+  <p class="demo-note">
+    DISPLAYING PREDEFINED DATASET LOCATION
+  </p>
+}
 
       <div class="metric">
-        <span>Observer altitude</span>
-        <strong>{{ dataset()?.site?.alt ?? '—' }} m</strong>
-      </div>
+  <span>Observer altitude</span>
+  <strong>
+    @if (selectedPoint()) {
+      Not calibrated
+    } @else {
+      {{ dataset()?.site?.alt ?? '—' }} m
+    }
+  </strong>
+</div>
 
       <div class="panel-divider"></div>
 
@@ -98,7 +112,9 @@
         <span class="live-tag">3D INTERACTIVE VIEW</span>
       </div>
 
-      <app-moon-viewer></app-moon-viewer>
+      <app-moon-viewer
+     (siteSelected)="onSiteSelected($event)">
+      </app-moon-viewer>
 
       <div class="terrain-footer">
         <span>TOPOGRAPHY: NASA LRO</span>
@@ -109,7 +125,18 @@
     <!-- RIGHT: ENVIRONMENTAL CONDITIONS -->
     <section class="panel conditions-panel">
       <p class="panel-label">03 / ENVIRONMENTAL ANALYSIS</p>
-      <h3>Site Conditions</h3>
+      <h3>Environmental Conditions</h3>
+
+@if (selectedPoint()) {
+  <p class="demo-note">
+    CUSTOM LOCATION SELECTED. LOCATION-SPECIFIC ENVIRONMENTAL
+    CALCULATIONS ARE NOT YET AVAILABLE.
+  </p>
+} @else {
+  <p class="demo-note">
+    VALUES BELOW REFER TO THE SELECTED PREDEFINED DATASET SITE.
+  </p>
+}
 
       @if (loading()) {
         <p>Loading scientific data...</p>
