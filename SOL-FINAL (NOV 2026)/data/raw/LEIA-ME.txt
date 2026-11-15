@@ -1,0 +1,1 @@
+Colocar aqui ldem_875s_20m.img e ldem_875s_20m.lbl (ver README.md). Nao fazer commit.
