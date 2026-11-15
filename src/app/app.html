@@ -1,137 +1,25 @@
-<div class="dashboard">
+import { TestBed } from '@angular/core/testing';
+import { App } from './app';
 
-  <!-- HEADER -->
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-symbol">◉</span>
-      <div>
-        <h1>LUNAR<span>OPS</span></h1>
-        <p>MISSION PLANNING INTERFACE</p>
-      </div>
-    </div>
+describe('App', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [App],
+    }).compileComponents();
+  });
 
-    <div class="mission-status">
-      <span class="status-dot"></span>
-      SYSTEM ONLINE
-      <span class="divider">|</span>
-      LUNAR SOUTH POLE
-    </div>
-  </header>
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
 
-  <!-- PAGE INTRODUCTION -->
-  <section class="page-heading">
-    <div>
-      <p class="eyebrow">MISSION ANALYSIS / 001</p>
-      <h2>Landing Site Intelligence</h2>
-      <p class="subtitle">
-        Explore illumination conditions and Earth communication opportunities.
-      </p>
-    </div>
+  it('should render the lunar dashboard title', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('LUNAR');
+    expect(compiled.textContent).toContain('MISSION PLANNING INTERFACE');
+  });
+});
 
-    <div class="date-display">
-      <span>MISSION DATE</span>
-      <strong>2026 — DEMO</strong>
-    </div>
-  </section>
-
-  <!-- MAIN DASHBOARD -->
-  <main class="dashboard-grid">
-
-    <!-- LEFT PANEL -->
-    <section class="panel site-panel">
-      <p class="panel-label">01 / SITE CONFIGURATION</p>
-      <h3>Landing Site</h3>
-
-      <label for="site">SELECT LOCATION</label>
-      <select id="site">
-        <option>Demo Site Alpha</option>
-        <option>Demo Site Beta</option>
-        <option>Demo Site Gamma</option>
-      </select>
-
-      <div class="coordinates">
-        <div>
-          <span>LATITUDE</span>
-          <strong>--°</strong>
-        </div>
-        <div>
-          <span>LONGITUDE</span>
-          <strong>--°</strong>
-        </div>
-      </div>
-
-      <div class="panel-divider"></div>
-
-      <p class="panel-label">MISSION PARAMETERS</p>
-      <label for="duration">MISSION DURATION</label>
-      <select id="duration">
-        <option>7 days</option>
-        <option>14 days</option>
-        <option>30 days</option>
-      </select>
-
-      <p class="demo-note">DEMO DATA — NOT SCIENTIFICALLY VALIDATED</p>
-    </section>
-
-    <!-- CENTRAL VISUALIZATION -->
-    <section class="panel terrain-panel">
-      <div class="panel-heading">
-        <div>
-          <p class="panel-label">02 / TERRAIN VISUALIZATION</p>
-          <h3>Lunar South Pole</h3>
-        </div>
-        <span class="live-tag">3D VIEW / PLACEHOLDER</span>
-      </div>
-
-       <app-moon-viewer></app-moon-viewer>
-
-      <div class="terrain-footer">
-        <span>TOPOGRAPHY: PENDING</span>
-        <span>ILLUMINATION: PENDING</span>
-      </div>
-    </section>
-
-    <!-- RIGHT PANEL -->
-    <section class="panel conditions-panel">
-      <p class="panel-label">03 / ENVIRONMENTAL CONDITIONS</p>
-      <h3>Site Conditions</h3>
-
-      <div class="metric">
-        <span>Solar illumination</span>
-        <strong>-- %</strong>
-        <small>Awaiting calculation</small>
-      </div>
-
-      <div class="metric">
-        <span>Earth visibility</span>
-        <strong>--</strong>
-        <small>Awaiting calculation</small>
-      </div>
-
-      <div class="metric">
-        <span>Communication window</span>
-        <strong>--</strong>
-        <small>Awaiting calculation</small>
-      </div>
-    </section>
-
-    <!-- BOTTOM PANEL -->
-<section class="panel timeline-panel">
-  <p class="panel-label">04 / MISSION TIMELINE</p>
-  <h3>Illumination & Communication Windows</h3>
-
-  <div class="timeline-placeholder">
-    <span>TIME</span>
-    <p>Scientific timeline visualization will appear here.</p>
-  </div>
-</section>
-
-</main>
-  <footer>
-  <span>LUNAROPS / MISSION INTELLIGENCE</span>
-  <span>PROTOTYPE BUILD 001</span>
-</footer>
-
-</div>
-
-<router-outlet />

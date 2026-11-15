@@ -1,379 +1,113 @@
-* {
-  box-sizing: border-box;
-}
+<div class="dashboard">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-symbol">◉</span>
+      <div>
+        <h1>LUNAR<span>OPS</span></h1>
+        <p>MISSION PLANNING INTERFACE</p>
+      </div>
+    </div>
 
-html,
-body {
-  width: 100%;
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #050817;
-}
+    <div class="mission-status">
+      <span class="status-dot"></span>
+      SYSTEM ONLINE
+      <span class="divider">|</span>
+      LUNAR SOUTH POLE
+    </div>
+  </header>
 
-html,
-body {
-  margin: 0 !important;
-  padding: 0 !important;
-  background: magenta !important;
-  width: 100% !important;
-  min-height: 100% !important;
-}
+  <section class="page-heading">
+    <div>
+      <p class="eyebrow">MISSION ANALYSIS / 001</p>
+      <h2>Landing Site Intelligence</h2>
+      <p class="subtitle">
+        Explore illumination conditions and Earth communication opportunities.
+      </p>
+    </div>
 
-body {
-  overflow-x: hidden;
-}
+    <div class="date-display">
+      <span>MISSION DATE</span>
+      <strong>2026 — DEMO</strong>
+    </div>
+  </section>
 
-app-root {
-  display: block;
-  width: 100%;
-  min-height: 100vh;
-}
+  <main class="dashboard-grid">
+    <section class="panel site-panel">
+      <p class="panel-label">01 / SITE CONFIGURATION</p>
+      <h3>Landing Site</h3>
 
-html,
-body {
-  width: 100%;
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  background: #050817;
-}
+      <label for="site-select">SELECT LOCATION</label>
+      <select id="site-select" (change)="onSiteChange($event)">
+        <option value="https://raw.githubusercontent.com/Haru7ven/Lunar_Dashboard7/main/SOL-FINAL%20%28NOV%202026%29/web/data_A.json">Site A (30 days)</option>
+        <option value="https://raw.githubusercontent.com/Haru7ven/Lunar_Dashboard7/main/SOL-FINAL%20%28NOV%202026%29/web/data_B.json">Site B (30 days)</option>
+        <option value="https://raw.githubusercontent.com/Haru7ven/Lunar_Dashboard7/main/SOL-FINAL%20%28NOV%202026%29/web/data_A_365d.json">Site A (365 days)</option>
+        <option value="https://raw.githubusercontent.com/Haru7ven/Lunar_Dashboard7/main/SOL-FINAL%20%28NOV%202026%29/web/data_B_365d.json">Site B (365 days)</option>
+      </select>
 
-app-root {
-  display: block;
-  width: 100%;
-  min-height: 100vh;
-}
+      <div class="coordinates">
+        <div>
+          <span>LATITUDE</span>
+          <strong>89.45° S</strong>
+        </div>
+        <div>
+          <span>LONGITUDE</span>
+          <strong>222.70° E</strong>
+        </div>
+      </div>
 
-:host {
-  display: block;
-  min-height: 100vh;
-}
+      <div class="panel-divider"></div>
 
-* {
-  box-sizing: border-box;
-}
+      <p class="panel-label">MISSION PARAMETERS</p>
+      <label for="duration">MISSION DURATION</label>
+      <select id="duration">
+        <option>30 days</option>
+        <option>365 days</option>
+      </select>
 
-.dashboard {
-  width: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 28px 4%;
+      <p class="demo-note">THE SOL SCIENTIFIC DATASET IS LOADED IN THIS PANEL. DATA IS PRELIMINARY AND NOT A FLIGHT CERTIFIED PRODUCT.</p>
+    </section>
 
-  position: relative;
-  isolation: isolate;
+    <section class="panel terrain-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="panel-label">02 / TERRAIN VISUALIZATION</p>
+          <h3>Lunar South Pole</h3>
+        </div>
+        <span class="live-tag">3D VIEW / INTERACTIVE</span>
+      </div>
 
-  background-image: url('/images/webb-deep-field.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+      <app-moon-viewer></app-moon-viewer>
 
-  color: #e8edff;
-  font-family: Arial, sans-serif;
-}
+      <div class="terrain-footer">
+        <span>TOPOGRAPHY: LOLA / DEM</span>
+        <span>ILLUMINATION: NASA SPICE</span>
+      </div>
+    </section>
 
-.dashboard::before {
-  content: none;
-}
+    <section class="panel conditions-panel">
+      <p class="panel-label">03 / ENVIRONMENTAL CONDITIONS</p>
+      <h3>Site Conditions</h3>
 
-.dashboard > * {
-background-image: url('/images/webb-deep-field.png');
-background-size: cover;
-background-position: center;
-background-attachment: fixed;
-background-repeat: no-repeat;;
-}
+      <div id="info-bar" class="sol-info-bar">Loading site metrics…</div>
+      <div id="kpi-container" class="kpi-grid"></div>
+    </section>
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #34443a;
-}
+    <section class="panel timeline-panel sol-panel">
+      <p class="panel-label">04 / MISSION TIMELINE</p>
+      <h3>Illumination & Communication Windows</h3>
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+      <div class="charts-grid">
+        <div class="plot-box" id="plot-map"></div>
+        <div class="plot-box" id="plot-sky"></div>
+        <div class="plot-box" id="plot-sun"></div>
+        <div class="plot-box" id="plot-ear"></div>
+        <div class="plot-box full-width" id="plot-vis"></div>
+      </div>
+    </section>
+  </main>
 
-.brand-symbol {
-  font-size: 36px;
-  color: #b7d49a;
-}
-
-.brand h1 {
-  margin: 0;
-  font-size: 21px;
-  letter-spacing: 3px;
-}
-
-.brand h1 span {
-  color: #b7d49a;
-}
-
-.brand p,
-.eyebrow,
-.panel-label {
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: #8fa594;
-}
-
-.brand p {
-  margin: 5px 0 0;
-}
-
-.mission-status {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: #b9c8bd;
-}
-
-.status-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  background: #a8d68b;
-  border-radius: 50%;
-  margin-right: 7px;
-}
-
-.divider {
-  margin: 0 12px;
-  color: #53645a;
-}
-
-.page-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  padding: 36px 0 28px;
-}
-
-.page-heading h2 {
-  font-size: 30px;
-  margin: 8px 0;
-}
-
-.subtitle {
-  color: #9aaa9e;
-  font-size: 13px;
-}
-
-.date-display {
-  text-align: right;
-  display: grid;
-  gap: 8px;
-}
-
-.date-display span,
-.coordinates span {
-  color: #8fa594;
-  font-size: 10px;
-  letter-spacing: 1px;
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 0.85fr 2fr 1fr;
-  gap: 16px;
-}
-
-.panel {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.terrain-panel {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.panel h3 {
-  font-size: 17px;
-  margin: 10px 0 20px;
-}
-
-.panel-label {
-  margin: 0;
-}
-
-.site-panel label {
-  display: block;
-  font-size: 10px;
-  color: #9aaa9e;
-  margin: 20px 0 8px;
-}
-
-select {
-  width: 100%;
-  padding: 12px;
-  background: #101713;
-  color: #e8eee8;
-  border: 1px solid #46594a;
-  border-radius: 4px;
-}
-
-.coordinates {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
-}
-
-.coordinates div {
-  display: grid;
-  gap: 8px;
-}
-
-.panel-divider {
-  border-top: 1px solid #35463a;
-  margin: 25px 0;
-}
-
-.demo-note {
-  font-size: 9px;
-  line-height: 1.6;
-  color: #d5b77b;
-  margin-top: 30px;
-}
-
-.panel-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.live-tag {
-  color: #b7d49a;
-  font-size: 9px;
-  letter-spacing: 1px;
-}
-
-.terrain-placeholder {
-  min-height: 320px;
-  background:
-  radial-gradient(ellipse at center, #243c70 0%, #121b3c 55%, #080d20 100%);
-  border: 1px solid #3a4c3e;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  color: #a8b9aa;
-  font-size: 10px;
-  letter-spacing: 1px;
-  text-align: center;
-}
-s
-.moon-circle {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #d3d5c8, #828c7e 55%, #414c43 80%);
-  box-shadow: 0 0 50px #9cb38a33;
-  display: grid;
-  place-items: center;
-  color: #263329;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.terrain-coordinates {
-  color: #82988a;
-}
-
-.terrain-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-  font-size: 9px;
-  color: #82988a;
-}
-
-.metric {
-  padding: 18px 0;
-  border-bottom: 1px solid #35463a;
-  display: grid;
-  gap: 8px;
-}
-
-.metric span,
-.metric small {
-  color: #9aaa9e;
-  font-size: 11px;
-}
-
-.metric strong {
-  font-size: 25px;
-  color: #b7d49a;
-}
-
-.timeline-panel {
-  grid-column: 1 / -1;
-}
-
-.timeline-placeholder {
-  min-height: 120px;
-  border: 1px dashed #53645a;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  color: #9aaa9e;
-  font-size: 12px;
-}
-
-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #34443a;
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: #82988a;
-}
-
-@media (max-width: 900px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .terrain-panel {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-}
-
-@media (max-width: 600px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .terrain-panel,
-  .timeline-panel {
-    grid-column: auto;
-  }
-
-  .page-heading {
-    align-items: start;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .mission-status {
-    display: none;
-  }
-}
+  <footer>
+    <span>LUNAROPS / MISSION INTELLIGENCE</span>
+    <span>PROTOTYPE BUILD 001</span>
+  </footer>
+</div>
