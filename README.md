@@ -1,59 +1,38 @@
-# LunarDashboard
+# LunarOps — Lunar South Pole Mission Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.7.
+Interactive scientific visualization project for exploring lunar South Pole terrain, solar illumination, and geometric Earth visibility.
 
-## Development server
+## Project contents
 
-To start a local development server, run:
+- **Angular dashboard** at the repository root, including the interactive Three.js lunar viewer and precomputed datasets in `public/data/`.
+- **SOL scientific pipeline and documentation** in [`SOL-FINAL (NOV 2026)/`](SOL-FINAL%20(NOV%202026)/README.md).
+- **Project overview and methodology** in [`README_SOL_Organized.md`](README_SOL_Organized.md).
+- **Validation status** in [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md).
 
-```bash
-ng serve
-```
+## Run the dashboard
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Requirements: Node.js and npm compatible with the versions in `package.json`.
 
 ```bash
-ng generate component component-name
+npm ci
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Open the local URL printed by Angular CLI (normally `http://localhost:4200/`). The dashboard reads its precomputed datasets from `public/data/` and the lunar model from `public/models/`.
+
+## Build and tests
 
 ```bash
-ng generate --help
+npm run build
+npm test
 ```
 
-## Building
+The Python scientific pipeline, its dependencies, data preparation, and test instructions are documented in the SOL project README linked above. The raw LOLA DEM and SPICE kernels are external inputs and are not included in this repository.
 
-To build the project run:
+## Scientific status
 
-```bash
-ng build
-```
+Validation of the current project version has been completed. The results are validated for the documented data, methods, assumptions, and simulation configurations. See [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md) and the SOL documentation for scope and interpretation. Validation does not make this research and decision-support project a flight-certified or operational NASA system, and geometric Earth visibility is not a guarantee of radio communication.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## License and data acknowledgements
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+See the repository's Apache License 2.0 file and the SOL documentation's credits and data-source notes. NASA and third-party datasets, libraries, and assets remain subject to their respective terms and attribution requirements.
