@@ -1,19 +1,17 @@
+
 <div class="dashboard">
+  <app-space-background></app-space-background>
 
   <!-- HEADER -->
   <header class="topbar">
     <div class="brand">
-      <span class="brand-symbol">◉</span>
       <div>
-        <h1>LUNAR<span>OPS</span></h1>
-        <p>MISSION PLANNING INTERFACE</p>
+        <h1>LUNAROPS</h1>
+        <p>LUNAR MISSION INTELLIGENCE</p>
       </div>
     </div>
 
     <div class="mission-status">
-      <span class="status-dot"></span>
-      SYSTEM ONLINE
-      <span class="divider">|</span>
       LUNAR SOUTH POLE
     </div>
   </header>
@@ -22,116 +20,153 @@
   <section class="page-heading">
     <div>
       <p class="eyebrow">MISSION ANALYSIS / 001</p>
-      <h2>Landing Site Intelligence</h2>
+      <h2>South Pole Mission Overview</h2>
       <p class="subtitle">
-        Explore illumination conditions and Earth communication opportunities.
+        Terrain, illumination and Earth visibility analysis for lunar landing sites.
       </p>
-    </div>
-
-    <div class="date-display">
-      <span>MISSION DATE</span>
-      <strong>2026 — DEMO</strong>
     </div>
   </section>
 
   <!-- MAIN DASHBOARD -->
   <main class="dashboard-grid">
 
-    <!-- LEFT PANEL -->
+    <!-- LEFT: SITE CONFIGURATION -->
     <section class="panel site-panel">
       <p class="panel-label">01 / SITE CONFIGURATION</p>
       <h3>Landing Site</h3>
 
-      <label for="site">SELECT LOCATION</label>
-      <select id="site">
-        <option>Demo Site Alpha</option>
-        <option>Demo Site Beta</option>
-        <option>Demo Site Gamma</option>
+      <label for="site">SELECT DATASET</label>
+
+      <select id="site" (change)="onSiteChange($event)">
+        <option value="data_A.json">Site A — 30 days</option>
+        <option value="data_B.json">Site B — 30 days</option>
+        <option value="data_A_365d.json">Site A — 365 days</option>
+        <option value="data_B_365d.json">Site B — 365 days</option>
       </select>
+
+      @if (loading()) {
+        <p>Loading lunar dataset...</p>
+      }
+
+      @if (loadError()) {
+        <p>{{ loadError() }}</p>
+      }
+
+      <div class="panel-divider"></div>
+
+      <p class="panel-label">LANDING SITE COORDINATES</p>
 
       <div class="coordinates">
         <div>
           <span>LATITUDE</span>
-          <strong>--°</strong>
+          <strong>{{ dataset()?.site?.lat ?? '—' }}°</strong>
         </div>
+
         <div>
           <span>LONGITUDE</span>
-          <strong>--°</strong>
+          <strong>{{ dataset()?.site?.lon ?? '—' }}°</strong>
         </div>
+      </div>
+
+      <div class="metric">
+        <span>Observer altitude</span>
+        <strong>{{ dataset()?.site?.alt ?? '—' }} m</strong>
       </div>
 
       <div class="panel-divider"></div>
 
-      <p class="panel-label">MISSION PARAMETERS</p>
-      <label for="duration">MISSION DURATION</label>
-      <select id="duration">
-        <option>7 days</option>
-        <option>14 days</option>
-        <option>30 days</option>
-      </select>
+      <p class="panel-label">DATASET INFORMATION</p>
 
-      <p class="demo-note">DEMO DATA — NOT SCIENTIFICALLY VALIDATED</p>
+      <div class="metric">
+        <span>Selected dataset</span>
+        <strong>{{ selectedDataset() }}</strong>
+      </div>
+
+      <p class="demo-note">
+        PRELIMINARY SCIENTIFIC ANALYSIS — NOT FLIGHT CERTIFIED
+      </p>
     </section>
 
-    <!-- CENTRAL VISUALIZATION -->
+    <!-- CENTRE: MOON VIEWER -->
     <section class="panel terrain-panel">
       <div class="panel-heading">
         <div>
-          <p class="panel-label">02 / TERRAIN VISUALIZATION</p>
+          <p class="panel-label">02 / LUNAR TERRAIN</p>
           <h3>Lunar South Pole</h3>
         </div>
-        <span class="live-tag">3D VIEW / PLACEHOLDER</span>
+
+        <span class="live-tag">3D INTERACTIVE VIEW</span>
       </div>
 
-       <app-moon-viewer></app-moon-viewer>
+      <app-moon-viewer></app-moon-viewer>
 
       <div class="terrain-footer">
-        <span>TOPOGRAPHY: PENDING</span>
-        <span>ILLUMINATION: PENDING</span>
+        <span>TOPOGRAPHY: NASA LRO</span>
+        <span>GEOGRAPHIC GRID: TEMPORARILY DISABLED</span>
       </div>
     </section>
 
-    <!-- RIGHT PANEL -->
+    <!-- RIGHT: ENVIRONMENTAL CONDITIONS -->
     <section class="panel conditions-panel">
-      <p class="panel-label">03 / ENVIRONMENTAL CONDITIONS</p>
+      <p class="panel-label">03 / ENVIRONMENTAL ANALYSIS</p>
       <h3>Site Conditions</h3>
 
-      <div class="metric">
-        <span>Solar illumination</span>
-        <strong>-- %</strong>
-        <small>Awaiting calculation</small>
-      </div>
+      @if (loading()) {
+        <p>Loading scientific data...</p>
+      } @else if (dataset()) {
 
-      <div class="metric">
-        <span>Earth visibility</span>
-        <strong>--</strong>
-        <small>Awaiting calculation</small>
-      </div>
+        <div class="metric">
+          <span>Solar illumination</span>
+          <strong>{{ dataset().stats.sun_pct }}%</strong>
+          <small>Time with Sun visibility</small>
+        </div>
 
-      <div class="metric">
-        <span>Communication window</span>
-        <strong>--</strong>
-        <small>Awaiting calculation</small>
+        <div class="metric">
+          <span>Earth visibility</span>
+          <strong>{{ dataset().stats.earth_pct }}%</strong>
+          <small>Time with Earth visibility</small>
+        </div>
+
+        <div class="metric">
+          <span>Simultaneous Sun + Earth visibility</span>
+          <strong>{{ dataset().stats.both_pct }}%</strong>
+          <small>Both visible simultaneously</small>
+        </div>
+
+        <div class="metric">
+          <span>Maximum continuous darkness</span>
+          <strong>{{ dataset().stats.max_dark_h }} h</strong>
+          <small>Longest interval without sunlight</small>
+        </div>
+
+        <div class="metric">
+          <span>Maximum Earth invisibility</span>
+          <strong>{{ dataset().stats.max_noearth_h }} h</strong>
+          <small>Longest interval without Earth visibility; not an RF outage measurement</small>
+        </div>
+
+      } @else {
+        <p>No dataset loaded.</p>
+      }
+    </section>
+
+    <!-- BOTTOM: TEMPORAL ANALYSIS -->
+    <section class="panel timeline-panel">
+      <p class="panel-label">04 / TEMPORAL ANALYSIS</p>
+      <h3>Illumination & Earth Visibility Timeline</h3>
+
+      <div class="timeline-placeholder">
+        <span>TIME SERIES DATA</span>
+        <p>Temporal visualization will be integrated here.</p>
       </div>
     </section>
 
-    <!-- BOTTOM PANEL -->
-<section class="panel timeline-panel">
-  <p class="panel-label">04 / MISSION TIMELINE</p>
-  <h3>Illumination & Communication Windows</h3>
+  </main>
 
-  <div class="timeline-placeholder">
-    <span>TIME</span>
-    <p>Scientific timeline visualization will appear here.</p>
-  </div>
-</section>
-
-</main>
   <footer>
-  <span>LUNAROPS / MISSION INTELLIGENCE</span>
-  <span>PROTOTYPE BUILD 001</span>
-</footer>
-
+    <span>LUNAROPS / MISSION INTELLIGENCE</span>
+    <span>NASA LRO / LUNAR SOUTH POLE</span>
+  </footer>
 </div>
 
 <router-outlet />

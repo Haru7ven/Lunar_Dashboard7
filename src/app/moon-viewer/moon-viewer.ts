@@ -1,3 +1,4 @@
+
 import {
   Component,
   ElementRef,
@@ -30,6 +31,7 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializeScene();
     this.loadMoon();
+    
     this.animate();
   }
 
@@ -52,10 +54,14 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
       antialias: true,
       alpha: true
     });
-    
+
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(container.clientWidth, container.clientHeight);
+
+    this.renderer.setSize(
+      container.clientWidth,
+      container.clientHeight
+    );
 
     container.appendChild(this.renderer.domElement);
 
@@ -85,8 +91,73 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
       (gltf) => {
         const moon = gltf.scene;
 
+        console.log('GLTF ASSET METADATA:', gltf.asset);
+        console.log('MOON SCENE METADATA:', moon.userData);
+
+        moon.updateMatrixWorld(true);
+
+        const box = new THREE.Box3().setFromObject(moon);
+
+        const center = new THREE.Vector3();
+        const size = new THREE.Vector3();
+
+        box.getCenter(center);
+        box.getSize(size);
+
+        const sphere = new THREE.Sphere();
+        box.getBoundingSphere(sphere);
+
+        let meshCount = 0;
+
+        moon.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            meshCount++;
+
+            const geometry = object.geometry;
+            const material = object.material as THREE.MeshStandardMaterial;
+
+            geometry.computeBoundingBox();
+
+            console.log('MESH METADATA:', object.userData);
+            console.log('--- SURFACE ANALYSIS ---');
+
+            console.log('Position attribute:', geometry.attributes['position']);
+            console.log('Normal attribute:', geometry.attributes['normal']);
+            console.log('UV attribute:', geometry.attributes['uv']);
+
+            console.log('Local geometry bounds:', geometry.boundingBox);
+
+            console.log('Texture map:', material.map);
+            console.log('Normal map:', material.normalMap);
+            console.log('Displacement map:', material.displacementMap);
+
+            if (material.map) {
+              const image = material.map.image as HTMLImageElement | undefined;
+
+              console.log(
+                'Texture dimensions:',
+                image?.width,
+                image?.height
+              );
+            }
+          }
+        });
+
+        console.log('--- MOON MODEL INSPECTION ---');
+        console.log('Dimensions:', size);
+        console.log('Geometric centre:', center);
+        console.log('Bounding sphere radius:', sphere.radius);
+        console.log('Number of meshes:', meshCount);
+        console.log('Original rotation:', moon.rotation);
+        console.log('Original position:', moon.position);
+
         moon.scale.setScalar(1);
+        moon.visible = true;
+        this.inspectModelCoordinates('TOPOGRAPHIC MOON', moon);
+        this.inspectCardinalAxes('TOPOGRAPHIC MOON', moon);
         this.scene.add(moon);
+
+        // this.loadGeographicGrid(moon);
       },
 
       (progress) => {
@@ -94,14 +165,223 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
           const percentage = Math.round(
             (progress.loaded / progress.total) * 100
           );
+
           console.log(`Loading Moon: ${percentage}%`);
         }
       },
 
-      (error) => {
+      (error: unknown) => {
         console.error('Could not load the NASA Moon model:', error);
       }
     );
+  }
+
+  private loadGeographicGrid(moon: THREE.Group): void {
+    const gridLoader = new GLTFLoader();
+
+    gridLoader.load(
+      '/models/Moon_NASA_LRO_15k_Grid_Small.glb',
+
+      (gridGltf) => {
+        const gridMoon = gridGltf.scene;
+
+        gridMoon.updateMatrixWorld(true);
+
+        const gridBox = new THREE.Box3().setFromObject(gridMoon);
+
+        const gridCenter = new THREE.Vector3();
+        const gridSize = new THREE.Vector3();
+
+        gridBox.getCenter(gridCenter);
+        gridBox.getSize(gridSize);
+
+        console.log('--- NASA GRID MODEL ---');
+        console.log('Asset metadata:', gridGltf.asset);
+        console.log('GRID MODEL POSITION:', gridMoon.position);
+        console.log('GRID MODEL ROTATION:', gridMoon.rotation);
+        console.log('GRID MODEL SCALE:', gridMoon.scale);
+        console.log('GRID MODEL CENTER:', gridCenter);
+        console.log('GRID MODEL DIMENSIONS:', gridSize);
+
+        gridMoon.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            const material = object.material as THREE.MeshStandardMaterial;
+
+            const image = material.map?.image as HTMLImageElement | undefined;
+
+            console.log('Grid mesh:', object.name);
+            console.log('Grid material:', material);
+
+            console.log(
+              'GRID TEXTURE DIMENSIONS:',
+              image?.width,
+              image?.height
+            );
+          }
+        });
+
+        // Display both models for geographic alignment inspection
+        moon.visible = true;
+        gridMoon.visible = true;
+
+        // Slightly enlarge the grid to reduce z-fighting
+        gridMoon.scale.setScalar(1.002);
+        this.inspectModelCoordinates('GEOGRAPHIC GRID', gridMoon);
+        this.scene.add(gridMoon);
+
+        console.log('Both lunar models loaded successfully.');
+      },
+
+      undefined,
+
+      (error: unknown) => {
+        console.error('Could not load NASA grid model:', error);
+      }
+    );
+   }
+  
+private inspectCardinalAxes(
+  label: string,
+  model: THREE.Group
+): void {
+
+  console.log(`===== ${label}: CARDINAL AXES =====`);
+
+  const directions = [
+    { name: '+X', vector: new THREE.Vector3(1, 0, 0) },
+    { name: '-X', vector: new THREE.Vector3(-1, 0, 0) },
+    { name: '+Y', vector: new THREE.Vector3(0, 1, 0) },
+    { name: '-Y', vector: new THREE.Vector3(0, -1, 0) },
+    { name: '+Z', vector: new THREE.Vector3(0, 0, 1) },
+    { name: '-Z', vector: new THREE.Vector3(0, 0, -1) }
+  ];
+
+  model.updateMatrixWorld(true);
+
+  model.traverse((object) => {
+
+    if (!(object instanceof THREE.Mesh)) return;
+
+    const positions = object.geometry.getAttribute('position') as THREE.BufferAttribute;
+
+    const matrix = object.matrixWorld;
+
+    for (const direction of directions) {
+
+      let bestDot = -Infinity;
+      let bestIndex = -1;
+
+      for (let i = 0; i < positions.count; i++) {
+
+        const point = new THREE.Vector3(
+          positions.getX(i),
+          positions.getY(i),
+          positions.getZ(i)
+        ).applyMatrix4(matrix).normalize();
+
+        const dot = point.dot(direction.vector);
+
+        if (dot > bestDot) {
+          bestDot = dot;
+          bestIndex = i;
+        }
+      }
+
+      console.log(direction.name, {
+        vertexIndex: bestIndex,
+        alignment: bestDot
+      });
+    }
+  });
+}
+  private inspectModelCoordinates(
+    label: string,
+    model: THREE.Group
+  ): void {
+
+    console.log(`===== ${label}: COORDINATE INSPECTION =====`);
+
+    model.updateMatrixWorld(true);
+
+    model.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) {
+        return;
+      }
+
+      const geometry = object.geometry;
+      const positions = geometry.attributes['position'] as THREE.BufferAttribute;
+      const uvs = geometry.attributes['uv'] as THREE.BufferAttribute;
+
+      if (!positions || !uvs) {
+        console.warn('Missing position or UV attributes:', object.name);
+        return;
+      }
+
+      let minU = Infinity;
+      let maxU = -Infinity;
+      let minV = Infinity;
+      let maxV = -Infinity;
+
+      for (let i = 0; i < uvs.count; i++) {
+        const u = uvs.getX(i);
+        const v = uvs.getY(i);
+
+        minU = Math.min(minU, u);
+        maxU = Math.max(maxU, u);
+        minV = Math.min(minV, v);
+        maxV = Math.max(maxV, v);
+      }
+
+      console.log('Mesh:', object.name);
+      console.log('Vertex count:', positions.count);
+      console.log('UV count:', uvs.count);
+      console.log('UV range:', { minU, maxU, minV, maxV });
+
+      const targets = [
+        { name: 'U=0.00, V=0.50', u: 0.00, v: 0.50 },
+        { name: 'U=0.25, V=0.50', u: 0.25, v: 0.50 },
+        { name: 'U=0.50, V=0.50', u: 0.50, v: 0.50 },
+        { name: 'U=0.75, V=0.50', u: 0.75, v: 0.50 },
+        { name: 'U=1.00, V=0.50', u: 1.00, v: 0.50 },
+        { name: 'U=0.50, V=0.00', u: 0.50, v: 0.00 },
+        { name: 'U=0.50, V=1.00', u: 0.50, v: 1.00 }
+      ];
+
+      for (const target of targets) {
+        let bestIndex = -1;
+        let bestDistance = Infinity;
+
+        for (let i = 0; i < uvs.count; i++) {
+          const du = uvs.getX(i) - target.u;
+          const dv = uvs.getY(i) - target.v;
+          const distance = du * du + dv * dv;
+
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = i;
+          }
+        }
+
+        const localPosition = new THREE.Vector3(
+          positions.getX(bestIndex),
+          positions.getY(bestIndex),
+          positions.getZ(bestIndex)
+        );
+
+        const worldPosition = localPosition.clone()
+          .applyMatrix4(object.matrixWorld);
+
+        console.log(target.name, {
+          vertexIndex: bestIndex,
+          actualUV: {
+            u: uvs.getX(bestIndex),
+            v: uvs.getY(bestIndex)
+          },
+          localPosition,
+          worldPosition
+        });
+      }
+    });
   }
 
   private animate = (): void => {
@@ -113,7 +393,10 @@ export class MoonViewer implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationId);
+
     this.controls?.dispose();
     this.renderer?.dispose();
+
+    this.renderer?.domElement.remove();
   }
 }
