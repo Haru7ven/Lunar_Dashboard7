@@ -197,5 +197,5 @@ The pipeline code, the standalone planner page and this document were developed 
 
 ## 13\. Credits and licences
 
-LOLA data: NASA PDS Geosciences Node and the LOLA science team. SPICE toolkit and kernels: NASA NAIF / JPL. Libraries: SpiceyPy, rasterio, numpy, astroquery, Plotly.js. Code licence: to be chosen by the team before publication.
+LOLA data: NASA PDS Geosciences Node and the LOLA science team. SPICE toolkit and kernels: NASA NAIF / JPL. Libraries: SpiceyPy, rasterio, numpy, astroquery, Plotly.js. Code licence: MIT License.
 
