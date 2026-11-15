@@ -1,6 +1,0 @@
-data/raw/*
-data/kernels/*
-preview/
-__pycache__/
-!data/raw/LEIA-ME.txt
-!data/kernels/LEIA-ME.txt
