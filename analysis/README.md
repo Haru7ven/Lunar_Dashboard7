@@ -191,7 +191,7 @@ The grid is the 7584 x 7584 DEM taken at every 16th pixel (320 m spacing, no ave
 
 ## 12\. Authorship and AI assistance
 
-Author of this module: Abudala Sualé. 
+Author of this module: Abudala Sualé, Dionísio Pelembe, Suneila dos Anjos Machanguana
 
 The pipeline code, the standalone planner page and this document were developed with assistance from AI tools: Claude (Anthropic) was used to revise code and documentation and Anti-Gravity (to fix specific bugs meanwhile running the code). The author ran the calculations, reviewed the outputs and made the decisions on scope and sites. Statements in this document describe what the code does as written and have not been independently verified.
 
