@@ -1,0 +1,4 @@
+spiceypy
+rasterio
+numpy
+astroquery
